@@ -57,7 +57,7 @@ joinIntegers :: [Integer] -> [Char]
 joinIntegers xs = filter (/= ',') $ init $ tail $ show xs
 
 sumDigits :: [Integer] -> Integer
-sumDigits xs = foldl (+) 0 $ splitDigits (joinIntegers xs)
+sumDigits xs = sum $ splitDigits (joinIntegers xs)
 
 -- Exercise 4
 

@@ -35,7 +35,7 @@ myDrop n l@(_:xs)
 
 -- Homework 1
 
--- Exercise 1
+-- Exercise 1.1
 
 toDigits :: Integer -> [Integer]
 toDigits = map (read . (:[])) . show
@@ -43,12 +43,12 @@ toDigits = map (read . (:[])) . show
 toDigitsRev :: Integer -> [Integer]
 toDigitsRev = reverse . toDigits
 
--- Exercise 2
+-- Exercise 1.2
 
 doubleEveryOther :: [Integer] -> [Integer]
 doubleEveryOther = reverse . zipWith (*) (cycle [1,2]) . reverse
 
--- Exercise 3
+-- Exercise 1.3
 
 splitDigits :: [Char] -> [Integer]
 splitDigits = map (fromIntegral .  digitToInt)
@@ -59,12 +59,12 @@ joinIntegers xs = filter (/= ',') $ init $ tail $ show xs
 sumDigits :: [Integer] -> Integer
 sumDigits xs = sum $ splitDigits (joinIntegers xs)
 
--- Exercise 4
+-- Exercise 1.4
 
 validate :: Integer -> Bool
 validate n = mod (sumDigits $ doubleEveryOther $ toDigits n) 10 == 0
 
--- Exercise 5
+-- Exercise 1.5
 
 type Peg = String
 type Move = (Peg, Peg)

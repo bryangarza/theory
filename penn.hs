@@ -70,3 +70,4 @@ type Peg = String
 type Move = (Peg, Peg)
 hanoi :: Integer -> Peg -> Peg -> Peg -> [Move]
 hanoi 1 a b c = [(a, b)]
+hanoi n a b c = hanoi (pred n) a c b ++ [(a, b)] ++ hanoi (pred n) c b a

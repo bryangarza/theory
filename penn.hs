@@ -206,3 +206,5 @@ lend3 amount balance
   | otherwise               = Just newBalance
   where reserve    = 100
         newBalance = balance - amount
+
+-- Note: Homework 2 is in LogAnalysis.hs

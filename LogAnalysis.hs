@@ -16,3 +16,11 @@ parseMessage s =
 
 parse :: String -> [LogMessage]
 parse xs = map (parseMessage) (lines xs)
+
+-- Exercise 2.2
+
+insert :: LogMessage -> MessageTree -> MessageTree
+insert lm mt =
+  case lm of
+   Unknown _        -> mt
+   LogMessage _ t _ -> mt

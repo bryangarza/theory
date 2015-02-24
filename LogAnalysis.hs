@@ -15,7 +15,7 @@ parseMessage s =
   where xs = words s
 
 parse :: String -> [LogMessage]
-parse xs = map (parseMessage) (lines xs)
+parse = (map parseMessage) . lines
 
 -- Exercise 2.2
 

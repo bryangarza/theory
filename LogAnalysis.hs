@@ -23,4 +23,6 @@ insert :: LogMessage -> MessageTree -> MessageTree
 insert lm mt =
   case lm of
    Unknown _        -> mt
-   LogMessage _ t _ -> mt
+   LogMessage _ t _ ->
+     case mt of
+      Leaf -> Node Leaf lm Leaf

@@ -20,9 +20,8 @@ parse = (map parseMessage) . lines
 -- Exercise 2.2
 
 insert :: LogMessage -> MessageTree -> MessageTree
-insert lm mt =
-  case lm of
-   Unknown _        -> mt
-   LogMessage _ t _ ->
-     case mt of
-      Leaf -> Node Leaf lm Leaf
+insert (Unknown _) mt = mt
+insert lm Leaf = Node Leaf lm Leaf
+insert lm@(LogMessage _ t _) (Node left msg@(LogMessage _ tsmsg _) right)
+  | t < tsmsg = Node (insert lm left) msg right
+  | otherwise = Node left msg (insert lm right)

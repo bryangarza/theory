@@ -25,3 +25,29 @@ insert lm Leaf = Node Leaf lm Leaf
 insert lm@(LogMessage _ t _) (Node left msg@(LogMessage _ tsmsg _) right)
   | t < tsmsg = Node (insert lm left) msg right
   | otherwise = Node left msg (insert lm right)
+
+-- Exercise 2.3
+
+build :: [LogMessage] -> MessageTree
+build [] = Leaf
+build (x:xs) = insert x (build xs)
+
+-- Exercise 2.4
+
+inOrder :: MessageTree -> [LogMessage]
+inOrder Leaf = []
+inOrder (Node left msg right) = inOrder left ++ [msg] ++ inOrder right
+
+-- Exercise 2.5
+
+getErrorSeverity :: LogMessage -> Int
+getErrorSeverity (LogMessage (Error n) _ _) = n
+getErrorSeverity _ = 0
+
+getMessage :: LogMessage -> String
+getMessage (LogMessage _ _ msg) = msg
+
+whatWentWrong :: [LogMessage] -> [String]
+whatWentWrong xs = map (getMessage) $
+                   filter (\x -> getErrorSeverity x > 50) $
+                   inOrder (build xs)

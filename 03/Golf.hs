@@ -3,9 +3,15 @@ import Control.Lens
 import Data.List (sort)
 import Data.Bool (bool)
 
+eachnth :: Int -> [a] -> [a]
+eachnth n xs = last x : bool next [] cont
+  where (x,y) = splitAt n xs
+        next = eachnth n y
+        cont = length y < n
+
 skips :: [a] -> [[a]]
-skips [] = []
-skips all@(_:xs) = all : (skips xs)
+skips xs = zipWith eachnth [1,2..len] $ cycle [xs]
+  where len = length xs
 
 localMaxima :: [Integer] -> [Integer]
 localMaxima = lm []

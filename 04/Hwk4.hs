@@ -9,7 +9,7 @@ fun1 (x:xs)
   | otherwise = fun1 xs
 
 fun1' :: [Integer] -> Integer
-fun1' = foldr (\x -> (*) (x - 2)) 1 . filter even
+fun1' = foldr ((*) . (subtract 2)) 1 . filter even
 
 fun2 :: Integer -> Integer
 fun2 1 = 0

@@ -1,5 +1,6 @@
 module Hwk4 where
 
+-- Ex 1
 -- Rewrite using *wholemeal programming* practices
 
 fun1 :: [Integer] -> Integer
@@ -23,6 +24,8 @@ fun2' = sum . filter even . takeWhile (/= 1) . iterate iter
           | otherwise = 3 * n + 1
 
 
+-- Ex 2
+
 data Tree a = Leaf
               | Node Integer (Tree a) a (Tree a)
               deriving (Show, Eq)
@@ -45,3 +48,26 @@ insert e (Node _ l e' r) =
 
 foldTree :: [a] -> Tree a
 foldTree = foldr insert Leaf
+
+
+-- Ex 3
+
+xor :: [Bool] -> Bool
+xor = foldr check False
+  where check False xs = xs
+        check _ True   = False
+        check _ _      = True
+
+map' :: (a -> b) -> [a] -> [b]
+map' f = foldr (\x xs -> f x : xs) []
+
+myFoldl :: (a -> b -> a) -> a -> [b] -> a
+myFoldl f a bs = foldr (\b g x -> g (f x b)) id bs a
+
+
+-- Ex 4
+
+sieveSundaram :: Integer -> [Integer]
+sieveSundaram n = [2*x+1 | x <- [1..n], x `notElem` del]
+  where
+    del = filter (<= n) [i+j+2*i*j | i <- [1..n], j <- [1..n]]

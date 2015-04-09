@@ -1,7 +1,8 @@
+{-# LANGUAGE TypeSynonymInstances #-}
 module Calc where
 import ExprT
+import StackVM as S
 import Parser
-import Data.Bool (bool)
 
 -- ex 1
 eval :: ExprT -> Integer
@@ -39,18 +40,26 @@ instance Expr Bool where
   mul = (&&)
 
 newtype MinMax = MinMax Integer deriving (Eq, Show, Ord)
-newtype Mod7 = Mod7 Integer deriving (Eq, Show)
-
 instance Expr MinMax where
   lit = MinMax
   add = min
   mul = max
 
 instance Expr Mod7 where
-  lit = flip mod 7
-  add = (+)
-  mul = (*)
+  lit = Mod7 . flip mod 7
+  add (Mod7 a) (Mod7 b) = lit (a + b)
+  mul (Mod7 a) (Mod7 b) = lit (a * b)
 
+newtype Mod7 = Mod7 Integer deriving (Eq, Show)
+
+-- can also use GeneralizedNewtypeDeriving extension:
+-- {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+-- and add deriving (Num)
+--
+-- instance Expr Mod7 where
+--   lit = Mod7 . flip mod 7
+--   add = (+)
+--   mul = (*)
 
 testExp :: Expr a => Maybe a
 testExp = parseExp lit add mul "(3 * -4) + 5"
@@ -59,3 +68,6 @@ testInteger = testExp :: Maybe Integer
 testBool = testExp :: Maybe Bool
 testMM = testExp :: Maybe MinMax
 testSat = testExp :: Maybe Mod7
+
+
+-- ex 5

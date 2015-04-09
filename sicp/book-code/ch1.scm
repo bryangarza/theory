@@ -646,6 +646,25 @@
       0
       (+ a (* a (- b 1)))))
 
+(define (double a) (+ a a))
+(define (halve a) (/ a 2))
+(define (even? n)
+  (= (remainder n 2) 0))
+
+(define (mult a b)
+  (cond ((= b 0) 0)
+        ((even? b) (mult (double a) (halve b)))
+        (else (+ a (mult a (- b 1))))))
+
+;; ex 1.18
+(define (mult a b)
+  (mult-iter a b 0))
+
+(define (mult-iter a b p)
+  (cond ((= b 0) p)
+        ((even? b) (mult-iter (double a) (halve b) p))
+        (else (mult-iter a (- b 1) (+ a p)))))
+
 ;;EXERCISE 1.19
 (define (fib n)
   (fib-iter 1 0 0 1 n))

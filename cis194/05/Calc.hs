@@ -45,16 +45,18 @@ instance Expr MinMax where
   add = min
   mul = max
 
+newtype Mod7 = Mod7 Integer deriving (Eq, Show)
+
 instance Expr Mod7 where
   lit = Mod7 . flip mod 7
   add (Mod7 a) (Mod7 b) = lit (a + b)
   mul (Mod7 a) (Mod7 b) = lit (a * b)
 
-newtype Mod7 = Mod7 Integer deriving (Eq, Show)
-
 -- can also use GeneralizedNewtypeDeriving extension:
 -- {-# LANGUAGE GeneralizedNewtypeDeriving #-}
--- and add deriving (Num)
+-- and add deriving (Num):
+--
+-- newtype Mod7 = Mod7 Integer deriving (Eq, Show, Num)
 --
 -- instance Expr Mod7 where
 --   lit = Mod7 . flip mod 7

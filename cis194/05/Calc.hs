@@ -27,6 +27,7 @@ instance Expr ExprT where
 reify :: ExprT -> ExprT
 reify = id
 
+--ex 4
 instance Expr Integer where
   lit = id
   add = (+)

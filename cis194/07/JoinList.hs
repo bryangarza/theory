@@ -1,7 +1,11 @@
+{-# LANGUAGE FlexibleInstances, TypeSynonymInstances #-}
 module JoinList where
+
 import Data.Monoid
+import Buffer as B
 import Sized as S
 import Scrabble as Scr
+import Editor as E
 
 data JoinList m a = Empty
                   | Single m a
@@ -66,3 +70,24 @@ takeJ i jl@(Append m jl1 jl2)
 
 scoreLine :: String -> JoinList Scr.Score String
 scoreLine s = Single (Scr.scoreString s) s
+
+instance B.Buffer (JoinList (Scr.Score, S.Size) String) where
+  toString Empty          = ""
+  toString (Single _ s)   = s
+  toString (Append _ l r) = toString l ++ toString r
+
+  fromString s = Single (Scr.scoreString s, S.Size 1) s
+
+  line = indexJ
+
+  replaceLine n s b = takeJ (n-1) b +++ fromString s +++ dropJ n b
+
+  numLines Empty               = 0
+  numLines (Single (_, n) _)   = getSize n
+  numLines (Append (_, n) _ _) = getSize n
+
+  value Empty                  = 0
+  value (Single (n, _) _)      = Scr.getScore n
+  value (Append (n, _) _ _)    = Scr.getScore n
+
+main = E.runEditor E.editor $ Single (Score 1, Size 1) "f"

@@ -1,6 +1,7 @@
 module JoinList where
 import Data.Monoid
 import Sized as S
+import Scrabble as Scr
 
 data JoinList m a = Empty
                   | Single m a
@@ -62,3 +63,6 @@ takeJ i jl@(Append m jl1 jl2)
   | i >= s1    = jl1 +++ takeJ (i - s1) jl2
   | otherwise = takeJ i jl1
   where s1 = branchSize jl1
+
+scoreLine :: String -> JoinList Scr.Score String
+scoreLine s = Single (Scr.scoreString s) s

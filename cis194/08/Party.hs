@@ -1,6 +1,5 @@
 module Party where
 
-import Data.List (intercalate)
 import Data.Tree
 import Employee
 

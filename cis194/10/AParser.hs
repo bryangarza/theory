@@ -57,3 +57,40 @@ posInt = Parser f
 ------------------------------------------------------------
 -- Your code goes below here
 ------------------------------------------------------------
+
+first :: (a -> b) -> (a, c) -> (b, c)
+first f (a, c) = (f a, c)
+
+instance Functor Parser where
+  fmap f p = Parser f'
+    where f' s = case runParser p s of
+            Nothing   -> Nothing
+            Just (a, s') -> Just (f a, s')
+
+instance Applicative Parser where
+  pure a = Parser (\s -> Just (a, s))
+  p1 <*> p2 = Parser f
+    where f s = case runParser p1 s of
+            Nothing      -> Nothing
+            Just (f', s') -> runParser (f' <$> p2) s'
+
+abParser :: Parser (Char, Char)
+abParser = (,) <$> char 'a' <*> char 'b'
+
+abParser_ :: Parser ()
+abParser_ = const () <$> abParser
+
+intPair :: Parser [Integer]
+intPair = (\a _ b -> [a, b]) <$> posInt <*> char ' ' <*> posInt
+
+-- instance Alternative Maybe where
+--   empty = Nothing
+--   Nothing <|> p = p
+--   Just x <|> _ = Just x
+
+instance Alternative Parser where
+  empty = Parser $ const Nothing
+  p <|> q = Parser $ \s -> runParser p s <|> runParser q s
+
+intOrUppercase :: Parser ()
+intOrUppercase = const () <$> satisfy isUpper <|> const () <$> posInt

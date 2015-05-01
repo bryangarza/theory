@@ -6,23 +6,24 @@ module SExpr where
 
 import AParser
 import Control.Applicative
+import Data.Char
 
 ------------------------------------------------------------
 --  1. Parsing repetitions
 ------------------------------------------------------------
 
 zeroOrMore :: Parser a -> Parser [a]
-zeroOrMore p = undefined
+zeroOrMore = many
 
 oneOrMore :: Parser a -> Parser [a]
-oneOrMore p = undefined
+oneOrMore = some
 
 ------------------------------------------------------------
 --  2. Utilities
 ------------------------------------------------------------
 
 spaces :: Parser String
-spaces = undefined
+spaces = zeroOrMore $ satisfy isSpace
 
 ident :: Parser String
 ident = undefined

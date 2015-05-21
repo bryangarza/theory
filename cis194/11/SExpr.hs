@@ -23,10 +23,10 @@ oneOrMore = some
 ------------------------------------------------------------
 
 spaces :: Parser String
-spaces = zeroOrMore $ satisfy isSpace
+spaces = many (satisfy isSpace)
 
 ident :: Parser String
-ident = undefined
+ident = liftA2 (:) (satisfy isAlpha) (many $ satisfy isAlphaNum)
 
 ------------------------------------------------------------
 --  3. Parsing S-expressions
@@ -45,3 +45,6 @@ data Atom = N Integer | I Ident
 data SExpr = A Atom
            | Comb [SExpr]
   deriving Show
+
+parseSExpr :: Parser SExpr
+parseSExpr = undefined

@@ -46,5 +46,23 @@ data SExpr = A Atom
            | Comb [SExpr]
   deriving Show
 
+rmSpaces :: Parser a -> Parser a
+rmSpaces p = spaces *> p <* spaces
+
+atomInt :: Parser Integer
+atomInt = read <$> (some $ satisfy isNumber)
+
+atomEither :: Parser Atom
+atomEither = rmSpaces $ I <$> ident <|> N <$> atomInt
+
+leftParen :: Parser Char
+leftParen = char '('
+
+rightParen :: Parser Char
+rightParen = char ')'
+
+listSExpr :: Parser [SExpr]
+listSExpr = rmSpaces $ leftParen *> (many parseSExpr) <* rightParen
+
 parseSExpr :: Parser SExpr
-parseSExpr = undefined
+parseSExpr = Comb <$> listSExpr <|> A <$> atomEither

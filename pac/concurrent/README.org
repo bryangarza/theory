@@ -1,5 +1,7 @@
 * Notes on Concurrent Haskell
 
+** =MVar=
+
 - An =MVar= is a /one-place channel/, which means that it can be used for passing
   messages between threads, but it can hold at most one message at a time.
 - An =MVar= is a /container for shared mutable state/. For example, a common
@@ -17,3 +19,35 @@
 
 - An =MVar= is a /building block/ for constructing larger concurrent
   Datastructures.
+
+** MVar as a Simple Channel: A Logging Service
+The logging service will have the following API:
+#+BEGIN_SRC haskell
+data Logger
+
+initLogger :: IO Logger
+logMessage :: Logger -> String -> IO ()
+logStop    :: Logger -> IO ()
+#+END_SRC
+
+Having =Logger= be a value that we pass around rather than a globally known
+top-level value is good practice; it means we could have multiple loggers, for
+example.
+
+=logStop= has an extra requirement: it must not return until the logging service
+has processed all outstanding requests and stopped.
+
+...
+
+Does this logger achieve what we set out to do? The =logMessage= function can
+return immediately provided the =MVar= is already empty, and then the logger
+will proceed concurrently with the caller of the =logMessage=. However, if there
+are multiple threads trying to log messages at the same time, it seems likely
+that the logging thread would not be able to process the messages fast enough
+and most of the threads would get blocked in =logMessage= while waiting for the
+=MVar= to become empty. This is because =MVar= is only a one-place channel. If
+it could hold more messages, we would gain greater concurrency when multiple
+threads need to call =logMessage= simultaneously.
+
+In /MVar as a Building Block: Unbounded Channels/, we will see how to use =MVar=
+to build fully buffered channels.

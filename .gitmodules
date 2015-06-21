@@ -1,0 +1,3 @@
+[submodule "NICTA"]
+	path = NICTA
+	url = git@github.com:bryangarza/NICTA.git

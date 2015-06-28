@@ -1,7 +1,5 @@
-* Notes on Concurrent Haskell
-
-** =MVar=
-
+#+TITLE: Notes on Concurrent Haskell
+* =MVar=
 - An =MVar= is a /one-place channel/, which means that it can be used for passing
   messages between threads, but it can hold at most one message at a time.
 - An =MVar= is a /container for shared mutable state/. For example, a common
@@ -20,7 +18,7 @@
 - An =MVar= is a /building block/ for constructing larger concurrent
   Datastructures.
 
-** MVar as a Simple Channel: A Logging Service
+* MVar as a Simple Channel: A Logging Service
 The logging service will have the following API:
 #+BEGIN_SRC haskell
 data Logger
@@ -51,3 +49,39 @@ threads need to call =logMessage= simultaneously.
 
 In /MVar as a Building Block: Unbounded Channels/, we will see how to use =MVar=
 to build fully buffered channels.
+
+* MVar as a Container for Shared State
+#+BEGIN_SRC haskell
+insert :: PhoneBookState -> Name -> PhoneNumber -> IO ()
+insert (PhoneBookState m) name number = do
+  book <- takeMVar m
+  putMVar m (Map.insert name number book)
+#+END_SRC
+
+If we were to do many insert operations consecutively, the ~Mvar~ would build up
+a large chain of unevaluated expressions, which could create a space leak.
+
+`$!` evals the argument strictly before applying the function:
+#+BEGIN_SRC haskell
+insert :: PhoneBookState -> Name -> PhoneNumber -> IO ()
+insert (PhoneBookState m) name number = do
+  book <- takeMVar m
+  putMVar m $! Map.insert name number book
+#+END_SRC
+
+To get brief locking and no space leaks, we need to use a trick:
+#+BEGIN_SRC haskell
+insert :: PhoneBookState -> Name -> PhoneNumber -> IO ()
+insert (PhoneBookState m) name number = do
+  book <- takeMVar m
+  let book' = Map.insert name number book
+  putMVar m book'
+  seq book' (return ())
+#+END_SRC
+
+With this sequence, we're storing an unevaluated expression in the ~MVar~, but
+it is evaluated immediately after the ~putMVar~. The lock is held only briefly,
+but now the thunk if also evaluated so we avoid building up a long chain of
+thunks.
+
+* MVar as a Building Block: Unbounded Channels

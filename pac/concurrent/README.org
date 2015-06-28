@@ -61,7 +61,7 @@ insert (PhoneBookState m) name number = do
 If we were to do many insert operations consecutively, the ~Mvar~ would build up
 a large chain of unevaluated expressions, which could create a space leak.
 
-`$!` evals the argument strictly before applying the function:
+~$!~ evals the argument strictly before applying the function:
 #+BEGIN_SRC haskell
 insert :: PhoneBookState -> Name -> PhoneNumber -> IO ()
 insert (PhoneBookState m) name number = do

@@ -68,6 +68,8 @@ insert (PhoneBookState m) name number = do
   book <- takeMVar m
   putMVar m $! Map.insert name number book
 #+END_SRC
+Now we hold the lock until ~Map.insert~ has completed, but there is no risk of a
+space leak.
 
 To get brief locking and no space leaks, we need to use a trick:
 #+BEGIN_SRC haskell

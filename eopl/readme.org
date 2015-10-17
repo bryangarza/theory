@@ -1,7 +1,8 @@
 * Essentials of Programming Languages
-1.1
-"Write a syntactic derivation that proves (-7 . (3 . (14 . ()))) is a list of
+** 1.1
+"Write a syntactic derivation that proves ~(-7 . (3 . (14 . ())))~ is a list of
 numbers."
+#+BEGIN_EXAMPLE
    <list-of-numbers>
 => (<number> . <list-of-numbers>)
 => (<number> . (<number> . <list-of-numbers>))
@@ -10,9 +11,11 @@ numbers."
 => (-7 . (3 . (<number> . <list-of-numbers>)))
 => (-7 . (3 . (14 . <list-of-numbers>)))
 => (-7 . (3 . (14 . ())))
+#+END_EXAMPLE
 
-1.2
-"Rewrite the <datum> grammar without using the Kleene star or plus."
+** 1.2
+"Rewrite the ~<datum>~ grammar without using the Kleene star or plus."
+#+BEGIN_EXAMPLE
 <list>         ::= () | <datum> | (<datum> <list>)
 <dotted-datum> ::= (<datum> . <datum>)
                ::= (<datum> <dotted-datum>)
@@ -20,9 +23,11 @@ numbers."
                ::= #(<datum> . <vector>)
 <datum         ::= <number> | <symbol> | <boolean> | <string>
                ::= <list> | <dotted-datum> | <vector>
+#+END_EXAMPLE
 
 "Indicate the changes to the above derivation that are required by this revised
 grammar."
+#+BEGIN_EXAMPLE
    <list>
 => (<datum> <list>)
 => (<datum> <datum> <list>)
@@ -35,13 +40,15 @@ grammar."
 => (#t (foo . <list>) <datum>)
 => (#t (foo . ()) <datum>)
 => (#t (foo . ()) 3)
+#+END_EXAMPLE
 
-1.3
-"Write a syntactic derivation that proves (a "mixed" #(bag (of . data))) is a
+** 1.3
+"Write a syntactic derivation that proves ~(a "mixed" #(bag (of . data)))~ is a
 datum, using either the grammar in the book or the revised grammar from the
 preceding exercise."
 
 Using grammar from the book:
+#+BEGIN_EXAMPLE
    <list>
 => (<datum> <datum> <datum>)
 => (a <datum> <datum>)
@@ -52,7 +59,9 @@ Using grammar from the book:
 => (a "mixed" #(bag (<datum> . <datum>)))
 => (a "mixed" #(bag (of . <datum>)))
 => (a "mixed" #(bag (of . data)))
+#+END_EXAMPLE
 
-"What is wrong with (a . b . c)?"
-A dotted datum only has one dot, right before the final <datum>. So it's
-possible to write (a b . c) but not (a . b . c)
+"What is wrong with ~(a . b . c)~?"
+
+A dotted datum only has one dot, right before the final ~<datum>~. So it's
+possible to write ~(a b . c)~ but not ~(a . b . c)~.
